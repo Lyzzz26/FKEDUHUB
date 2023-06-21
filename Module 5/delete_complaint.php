@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     $result = mysqli_query($conn, $query);
 
     if ($result) {
-        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'complaint_form.php';
+        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'complaint_dashboard.php';
 
         echo "<script>";
         echo "alert('Complaint deleted successfully.');";

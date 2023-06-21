@@ -54,7 +54,7 @@ $conn->close();
     <script>
         window.onload = function() {
             alert("<?php echo $message; ?>");
-            window.location.href = "complaint_dashboard.php";
+            window.location.href = "complaint_homepage.php";
         };
     </script>
 </head>

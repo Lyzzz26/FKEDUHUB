@@ -388,7 +388,51 @@ td:last-child {
     font-size: 16px;
     cursor: pointer;
 }
+    /* Dropdown menu styles */
+    .dropdown {
+        position: relative;
+    }
 
+    .dropdown .toggle {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dropdown .toggle i {
+        margin-left: 5px;
+    }
+
+    .dropdown .sub-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #ffffff;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+
+    .dropdown:hover .sub-menu {
+        display: block;
+    }
+
+    .dropdown .sub-menu li {
+        list-style: none;
+        padding: 5px 0;
+    }
+
+    .dropdown .sub-menu li a {
+        display: block;
+        color: #333333;
+        text-decoration: none;
+    }
+
+    .dropdown .sub-menu li a:hover {
+        color: #000000;
+        background-color: #f0f0f0;
+    }
 </style>
 
 <body>
@@ -404,7 +448,15 @@ td:last-child {
                 </div>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Complaint</a></li>
+                    <li class="dropdown">
+                    <a href="#" class="toggle">Complaint <i class='bx bx-chevron-down'></i></a>
+                    <ul class="sub-menu">
+                        <li><a href="#">Complaint Calc</a></li>
+                        <li><a href="#">Complaint List</a></li>
+                        <li><a href="#">Complaint Dashboard</a></li>
+                        <li><a href="#">Complaint Report</a></li>
+                    </ul>
+                </li>
                     <li><a href="#">Report</a></li>
                     <li><a href="#">Log Out</a></li> 
                 </ul>
