@@ -331,14 +331,11 @@ footer a {
   border-radius: 5px;
 }
 
-
-
 .header {
   background-color: #66CDAA;
   padding: 20px;
   text-align: center;
   margin-bottom: 20px;
-  margin-top: none;
   width: 100%;
 }
 
@@ -347,51 +344,115 @@ footer a {
   margin: 0;
 }
 
-table {
-    width: 100%;
-    max-height: 500px;
-    border-collapse: collapse;
-    overflow-y: auto; 
+.plain-form {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  margin-bottom: 90px;
+  overflow-y: auto; 
 }
 
-th, td {
-    padding: 10px 20px; 
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+label {
+  display: block;
+  margin-bottom: 10px;
 }
 
-th {
-    background-color: #f2f2f2;
+input[type="text"],
+input[type="Complaint_Type"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
-tr:hover {
-    background-color: #f5f5f5;
+textarea {
+    height: 150px;
 }
 
-td:last-child {
-    text-align: center;
+input[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-
-.filter-dropdown {
-    margin-bottom: 10px;
-    margin-left: 10px;
+input[type="submit"]:hover {
+  background-color: #45a049;
 }
 
-.filter-dropdown select {
-    background-color: #ccc; /* Light grey color */
-    border: none;
-    color: black;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-.complaint-container {
-    margin-bottom: 70px;
+input[type="reset"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
+input[type="reset"]:hover {
+  background-color: #45a049;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+    /* Dropdown menu styles */
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown .toggle {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dropdown .toggle i {
+        margin-left: 5px;
+    }
+
+    .dropdown .sub-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #ffffff;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+
+    .dropdown:hover .sub-menu {
+        display: block;
+    }
+
+    .dropdown .sub-menu li {
+        list-style: none;
+        padding: 5px 0;
+    }
+
+    .dropdown .sub-menu li a {
+        display: block;
+        color: #333333;
+        text-decoration: none;
+    }
+
+    .dropdown .sub-menu li a:hover {
+        color: #000000;
+        background-color: #f0f0f0;
+    }
 </style>
 
 <body>
@@ -407,7 +468,7 @@ td:last-child {
                 </div>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">Complaint</a></li>
+                    <li><a href="complaint_homepage.php">Complaint</a></li>
                     <li><a href="#">Report</a></li>
                     <li><a href="#">Log Out</a></li> 
                 </ul>
@@ -432,52 +493,88 @@ td:last-child {
     </nav>
 
     <header class="header">
-        <h1>COMPLAINT DASHBOARD</h1>
+        <h1>COMPLAINT MANAGEMENT</h1>
       </header>
-      <body>
-    <div class="complaint-container">
-        <?php
-        $host = 'localhost';
-        $username = 'root';
-        $password = '';
-        $database = 'fkedu';
 
-        $conn = mysqli_connect($host, $username, $password, $database);
-        if (!$conn) {
-            die('Database connection error: ' . mysqli_connect_error());
-        }
 
-        $query = "SELECT * FROM complaint";
-        $result = mysqli_query($conn, $query);
+    <form class="plain-form" action="process_form.php" method="POST">
+    <label for="user_ID">USER ID:</label>
+    <input type="text" id="user_ID" name="user_ID" placeholder="Enter Your User ID">
 
-        if (mysqli_num_rows($result) > 0) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                $complaintID = $row['Complaint_ID'];
-                $userID = $row['User_ID'];
-                $complaintType = $row['Complaint_Type'];
-                $complaintDescription = $row['Complaint_Description'];
-            
-                echo "<p><strong>User ID:</strong> $userID</p>";
-                echo "<p><strong>Complaint Type:</strong> $complaintType</p>";
-                echo "<p><strong>Complaint Description:</strong> $complaintDescription</p>";
-                echo "<a href='edit_complaint.php?id=$complaintID'>Edit</a> ";
-                echo "<a href='delete_complaint.php?id=$complaintID' . >Delete</a> ";
-                echo "<a href='view_complaint.php?id=$complaintID'>View</a>";
-                echo "<hr>";
-            }
-        } else {
-            echo "No complaints found.";
-        }
+    <label for="Complaint_Type">COMPLAINT TYPE:</label>
+    <select id="Complaint_Type" name="Complaint_Type">
+        <option value="unsatisfied">Unsatisfied Expert's Feedback</option>
+        <option value="research-area">Assigned Research Area</option>
+        <option value="academic-status">Wrong Academic Status</option>
+        <option value="other">Others...</option>
+      </select>
+      <div id="other-Complaint_Type-container" style="display: none;">
+        <label for="other-Complaint_Type">Please specify:</label>
+        <input type="text" id="other-Complaint_Type" name="other-Complaint_Type" placeholder="Enter other complaint type">
+      </div>
+    
 
-        mysqli_close($conn);
-        ?>
-    </div>
-    <footer class="footer">
+    <label for="Complaint_Description">COMPLAINT</label>
+    <textarea id="Complaint_Description" name="Complaint_Description" placeholder="Enter your Complaint_Description"></textarea>
+    <input type="submit" value="Submit">
+    <input type="reset" value="Reset">
+  </form>
+
+      <footer class="footer">
          <a href="#">Help</a>
          <a href="#">Privacy</a>
          <a href="#">Settings</a>
          <p>&copy; 2023 Debug Group. All rights reserved.</p>
       </footer>
+   </div>
+   <script>
+      const body = document.querySelector("body"),
+      nav = document.querySelector("nav"),
+      modeToggle = document.querySelector(".dark-light"),
+      searchToggle = document.querySelector(".searchToggle"),
+      sidebarOpen = document.querySelector(".sidebarOpen"),
+      sidebarClose = document.querySelector(".sidebarClose");
+      let getMode = localStorage.getItem("mode");
+          if(getMode && getMode === "dark-mode"){
+            body.classList.add("dark");
+          }
+    // js code to toggle dark and light mode
+      modeToggle.addEventListener("click" , () =>{
+        modeToggle.classList.toggle("active");
+        body.classList.toggle("dark");
+        // js code to keep user selected mode even page refresh or file reopen
+        if(!body.classList.contains("dark")){
+            localStorage.setItem("mode" , "light-mode");
+        }else{
+            localStorage.setItem("mode" , "dark-mode");
+        }
+      });
+     // js code to toggle search box
+        searchToggle.addEventListener("click" , () =>{
+        searchToggle.classList.toggle("active");
+      });
+ 
+      
+    //   js code to toggle sidebar
+      sidebarOpen.addEventListener("click" , () =>{
+      nav.classList.add("active");
+       });
+      body.addEventListener("click" , e =>{
+      let clickedElm = e.target;
+      if(!clickedElm.classList.contains("sidebarOpen") && !clickedElm.classList.contains("menu")){
+      nav.classList.remove("active");
+      }
+    });
+    var complaintTypeSelect = document.getElementById('Complaint_Type');
+        var otherContainer = document.getElementById('other-Complaint_Type-container');
 
+        complaintTypeSelect.addEventListener('change', function() {
+            if (complaintTypeSelect.value === 'other') {
+                otherContainer.style.display = 'block';
+            } else {
+                otherContainer.style.display = 'none';
+            }
+        });
+   </script>
 </body>
 </html>
