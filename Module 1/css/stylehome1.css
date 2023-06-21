@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-   <meta charset="utf-8">
-   <title>FK-Edu Research</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-   <link rel="stylesheet" href="css/stylehome1.css">
-   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-</head>
-
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 *{
     margin: 0;
     padding: 0;
@@ -31,6 +19,7 @@ body{
     height: 100vh;
     background-color: var(--body-color);
 	padding-top: 70px;
+	padding-bottom: 70px;
 }
 body.dark{
     --body-color: #272e2b;
@@ -268,7 +257,6 @@ body.dark .search-field i{
   justify-content: flex-start;
   padding: 0;
 }
-
 footer {
   background-color: var(--nav-color);
   color: var(--text-color);
@@ -288,8 +276,6 @@ footer a {
   text-decoration: none;
   color: var(--text-color);
 }
-
-
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -331,192 +317,8 @@ footer a {
   border-radius: 5px;
 }
 
+	
 
 
-.header {
-  background-color: #66CDAA;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
-  margin-top: none;
-  width: 100%;
-}
+	
 
-.header h1 {
-  color: black;
-  margin: 0;
-}
-
-
-table {
-    width: 100%;
-    max-height: 500px;
-    border-collapse: collapse;
-    overflow-y: auto; 
-}
-
-th, td {
-    padding: 10px 20px; 
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-tr:hover {
-    background-color: #f5f5f5;
-}
-
-td:last-child {
-    text-align: center;
-}
-
-.filter-dropdown {
-    margin-bottom: 10px;
-    margin-left: 10px;
-}
-
-.filter-dropdown select {
-    background-color: #ccc; /* Light grey color */
-    border: none;
-    color: black;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-</style>
-
-<body>
-   <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh">
-      <nav>
-        <div class="nav-bar">
-            <i class='bx bx-menu sidebarOpen' ></i>
-            <span class="logo navLogo"><a href="#">FK-EduSearch</a></span>
-            <div class="menu">
-                <div class="logo-toggle">
-                    <span class="logo"><a href="#">FK-Edu Search</a></span>
-                    <i class='bx bx-x siderbarClose'></i>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Complaint</a></li>
-                    <li><a href="#">Report</a></li>
-                    <li><a href="#">Log Out</a></li> 
-                </ul>
-            </div>
-            <div class="darkLight-searchBox">
-                <div class="dark-light">
-                    <i class='bx bx-moon moon'></i>
-                    <i class='bx bx-sun sun'></i>
-                </div>
-                <div class="searchBox">
-                   <div class="searchToggle">
-                    <i class='bx bx-x cancel'></i>
-                    <i class='bx bx-search search'></i>
-                   </div>
-                    <div class="search-field">
-                        <input type="text" placeholder="Search...">
-                        <i class='bx bx-search'></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <header class="header">
-        <h1>COMPLAINT CALCULATION</h1>
-      </header>
-
-      <?php
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'fkedu';
-
-// Connect to the database
-$conn = mysqli_connect($host, $username, $password, $database);
-if (!$conn) {
-    die('Database connection error: ' . mysqli_connect_error());
-}
-
-// Query to calculate the total complaints for each complaint type
-$query = "SELECT Complaint_Type, COUNT(*) AS Total_Complaints FROM complaint GROUP BY Complaint_Type";
-$result = mysqli_query($conn, $query);
-
-// Display the table
-if (mysqli_num_rows($result) > 0) {
-    echo "<table>";
-    echo "<tr><th>Complaint Type</th><th>Total Complaints</th></tr>";
-    while ($row = mysqli_fetch_assoc($result)) {
-        $complaintType = $row['Complaint_Type'];
-        $totalComplaints = $row['Total_Complaints'];
-
-        echo "<tr>";
-        echo "<td>$complaintType</td>";
-        echo "<td>$totalComplaints</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-} else {
-    echo "No complaints found.";
-}
-
-// Close the database connection
-mysqli_close($conn);
-?>
-
-      <footer class="footer">
-         <a href="#">Help</a>
-         <a href="#">Privacy</a>
-         <a href="#">Settings</a>
-         <p>&copy; 2023 Debug Group. All rights reserved.</p>
-      </footer>
-   </div>
-
-   <script>
-      const body = document.querySelector("body"),
-      nav = document.querySelector("nav"),
-      modeToggle = document.querySelector(".dark-light"),
-      searchToggle = document.querySelector(".searchToggle"),
-      sidebarOpen = document.querySelector(".sidebarOpen"),
-      sidebarClose = document.querySelector(".sidebarClose");
-      let getMode = localStorage.getItem("mode");
-          if(getMode && getMode === "dark-mode"){
-            body.classList.add("dark");
-          }
-    // js code to toggle dark and light mode
-      modeToggle.addEventListener("click" , () =>{
-        modeToggle.classList.toggle("active");
-        body.classList.toggle("dark");
-        // js code to keep user selected mode even page refresh or file reopen
-        if(!body.classList.contains("dark")){
-            localStorage.setItem("mode" , "light-mode");
-        }else{
-            localStorage.setItem("mode" , "dark-mode");
-        }
-      });
-     // js code to toggle search box
-        searchToggle.addEventListener("click" , () =>{
-        searchToggle.classList.toggle("active");
-      });
- 
-      
-    //   js code to toggle sidebar
-      sidebarOpen.addEventListener("click" , () =>{
-      nav.classList.add("active");
-       });
-      body.addEventListener("click" , e =>{
-      let clickedElm = e.target;
-      if(!clickedElm.classList.contains("sidebarOpen") && !clickedElm.classList.contains("menu")){
-      nav.classList.remove("active");
-      }
-    });
-   </script>
-
-</body>
-</html>

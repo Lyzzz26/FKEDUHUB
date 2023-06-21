@@ -347,12 +347,12 @@ footer a {
   margin: 0;
 }
 
+
 table {
     width: 100%;
     max-height: 500px;
     border-collapse: collapse;
     overflow-y: auto; 
-    margin-bottom: 70px;
 }
 
 th, td {
@@ -388,6 +388,7 @@ td:last-child {
     font-size: 16px;
     cursor: pointer;
 }
+
 </style>
 
 <body>
@@ -428,60 +429,45 @@ td:last-child {
     </nav>
 
     <header class="header">
-        <h1>COMPLAINT LIST</h1>
+        <h1>COMPLAINT REPORT</h1>
       </header>
 
-      <div class="filter-dropdown">
-        <select id="filterOption">
-            <option value="">Filter</option>
-            <option value="date">Filter by Date</option>
-            <option value="time">Filter by Time</option>
-        </select>
-    </div>
+      <?php
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'fkedu';
 
-    <table>
-        <tr>
-            <th>Complaint ID</th>
-            <th>Complaint Date</th>
-            <th>Complaint Time</th>
-            <th>Complaint Type</th>
-            <th>Complaint Status</th>
-        </tr>
-        
-        <?php
+// Connect to the database
+$conn = mysqli_connect($host, $username, $password, $database);
+if (!$conn) {
+    die('Database connection error: ' . mysqli_connect_error());
+}
 
-        // Assuming you have already established a database connection
-        $host = 'localhost';
-        $username = 'root';
-        $password = '';
-        $database = 'fkedu';
+// Query to calculate the total complaints for each complaint type
+$query = "SELECT Complaint_Type, COUNT(*) AS Total_Complaints FROM complaint GROUP BY Complaint_Type";
+$result = mysqli_query($conn, $query);
 
-        $conn = mysqli_connect($host, $username, $password, $database);
-        if (!$conn) {
-            die('Database connection error: ' . mysqli_connect_error());
-        }
+$complaintData = array();
+while ($row = mysqli_fetch_assoc($result)) {
+    $complaintType = $row['Complaint_Type'];
+    $totalComplaints = $row['Total_Complaints'];
+    $complaintData[$complaintType] = $totalComplaints;
+}
 
-        // Fetch data from the 'complaint' table
-        $query = "SELECT * FROM complaint";
-        $result = mysqli_query($conn, $query);
+mysqli_close($conn);
+?>
 
-        // Loop through the query results and populate the table rows
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo "<tr>";
-            echo "<td>" . $row['Complaint_ID'] . "</td>";
-            echo "<td>" . $row['Complaint_Date'] . "</td>";
-            echo "<td>" . $row['Complaint_Time'] . "</td>";
-            echo "<td>" . $row['Complaint_Type'] . "</td>";
-            echo "<td>" . $row['Complaint_Status'] . "</td>";
-            echo "</tr>";
-        }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pie Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="complaintChart"></canvas>
 
-        // Close the database connection
-        mysqli_close($conn);
-        ?>
-    </table>
-
-      <footer class="footer">
+    <footer class="footer">
          <a href="#">Help</a>
          <a href="#">Privacy</a>
          <a href="#">Settings</a>
@@ -489,45 +475,48 @@ td:last-child {
       </footer>
    </div>
 
+    <script>
+        // Retrieve the complaint data from PHP
+        var complaintData = <?php echo json_encode($complaintData); ?>;
 
-   <script>
-      const body = document.querySelector("body"),
-      nav = document.querySelector("nav"),
-      modeToggle = document.querySelector(".dark-light"),
-      searchToggle = document.querySelector(".searchToggle"),
-      sidebarOpen = document.querySelector(".sidebarOpen"),
-      sidebarClose = document.querySelector(".sidebarClose");
-      let getMode = localStorage.getItem("mode");
-          if(getMode && getMode === "dark-mode"){
-            body.classList.add("dark");
-          }
-    // js code to toggle dark and light mode
-      modeToggle.addEventListener("click" , () =>{
-        modeToggle.classList.toggle("active");
-        body.classList.toggle("dark");
-        // js code to keep user selected mode even page refresh or file reopen
-        if(!body.classList.contains("dark")){
-            localStorage.setItem("mode" , "light-mode");
-        }else{
-            localStorage.setItem("mode" , "dark-mode");
+        // Get the labels and data for the chart
+        var labels = Object.keys(complaintData);
+        var data = Object.values(complaintData);
+
+// Generate the chart
+var ctx = document.getElementById('complaintChart').getContext('2d');
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+            ],
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        legend: {
+            display: true,
+            position: 'bottom',
+        },
+        layout: {
+            padding: {
+                left: 400,
+                right: 400,
+                top: 50,
+                bottom: 500
+            }
         }
-      });
-     // js code to toggle search box
-        searchToggle.addEventListener("click" , () =>{
-        searchToggle.classList.toggle("active");
-      });
- 
-      
-    //   js code to toggle sidebar
-      sidebarOpen.addEventListener("click" , () =>{
-      nav.classList.add("active");
-       });
-      body.addEventListener("click" , e =>{
-      let clickedElm = e.target;
-      if(!clickedElm.classList.contains("sidebarOpen") && !clickedElm.classList.contains("menu")){
-      nav.classList.remove("active");
-      }
-    });
-   </script>
+    }
+});
+    </script>
 </body>
 </html>

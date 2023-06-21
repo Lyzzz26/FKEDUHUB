@@ -1,15 +1,48 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-   <meta charset="utf-8">
-   <title>FK-Edu Research</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-   <link rel="stylesheet" href="css/stylehome1.css">
-   <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
-</head>
+<?php
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'fkedu';
 
-<style>
+// Connect to the database
+$conn = mysqli_connect($host, $username, $password, $database);
+if (!$conn) {
+    die('Database connection error: ' . mysqli_connect_error());
+}
+
+// Handle filter selection
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'day';
+
+// Set the date range based on the filter selection
+if ($filter === 'day') {
+    $startDate = date('Y-m-d');
+    $endDate = date('Y-m-d');
+} elseif ($filter === 'week') {
+    $startDate = date('Y-m-d', strtotime('-1 week'));
+    $endDate = date('Y-m-d');
+} elseif ($filter === 'month') {
+    $startDate = date('Y-m-d', strtotime('-1 month'));
+    $endDate = date('Y-m-d');
+} else {
+    $startDate = '';
+    $endDate = '';
+}
+
+// Prepare the query to calculate the total complaints by type
+$query = "SELECT Complaint_Type, COUNT(*) AS TotalComplaints FROM complaint 
+          WHERE Complaint_Date >= '$startDate' AND Complaint_Date <= '$endDate'
+          GROUP BY Complaint_Type";
+
+// Execute the query
+$result = mysqli_query($conn, $query);
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complaint Calculation</title>
+    <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 *{
     margin: 0;
@@ -347,12 +380,12 @@ footer a {
   margin: 0;
 }
 
+
 table {
     width: 100%;
     max-height: 500px;
     border-collapse: collapse;
     overflow-y: auto; 
-    margin-bottom: 70px;
 }
 
 th, td {
@@ -373,6 +406,14 @@ td:last-child {
     text-align: center;
 }
 
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+    clear: both;
+}
+
 .filter-dropdown {
     margin-bottom: 10px;
     margin-left: 10px;
@@ -388,146 +429,55 @@ td:last-child {
     font-size: 16px;
     cursor: pointer;
 }
-</style>
-
+    </style>
+</head>
 <body>
-   <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh">
-      <nav>
-        <div class="nav-bar">
-            <i class='bx bx-menu sidebarOpen' ></i>
-            <span class="logo navLogo"><a href="#">FK-EduSearch</a></span>
-            <div class="menu">
-                <div class="logo-toggle">
-                    <span class="logo"><a href="#">FK-Edu Search</a></span>
-                    <i class='bx bx-x siderbarClose'></i>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Complaint</a></li>
-                    <li><a href="#">Report</a></li>
-                    <li><a href="#">Log Out</a></li> 
-                </ul>
-            </div>
-            <div class="darkLight-searchBox">
-                <div class="dark-light">
-                    <i class='bx bx-moon moon'></i>
-                    <i class='bx bx-sun sun'></i>
-                </div>
-                <div class="searchBox">
-                   <div class="searchToggle">
-                    <i class='bx bx-x cancel'></i>
-                    <i class='bx bx-search search'></i>
-                   </div>
-                    <div class="search-field">
-                        <input type="text" placeholder="Search...">
-                        <i class='bx bx-search'></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <header class="header">
-        <h1>COMPLAINT LIST</h1>
+<header class="header">
+        <h1>COMPLAINT CALCULATION</h1>
       </header>
 
-      <div class="filter-dropdown">
-        <select id="filterOption">
-            <option value="">Filter</option>
-            <option value="date">Filter by Date</option>
-            <option value="time">Filter by Time</option>
+    <div class="filter-container">
+        <label for="filter">Filter by:</label>
+        <select id="filter" name="filter" onchange="updateFilter()">
+            <option value="day" <?= $filter === 'day' ? 'selected' : '' ?>>Day</option>
+            <option value="week" <?= $filter === 'week' ? 'selected' : '' ?>>Week</option>
+            <option value="month" <?= $filter === 'month' ? 'selected' : '' ?>>Month</option>
         </select>
     </div>
 
     <table>
         <tr>
-            <th>Complaint ID</th>
-            <th>Complaint Date</th>
-            <th>Complaint Time</th>
             <th>Complaint Type</th>
-            <th>Complaint Status</th>
+            <th>Total Complaints</th>
         </tr>
-        
         <?php
-
-        // Assuming you have already established a database connection
-        $host = 'localhost';
-        $username = 'root';
-        $password = '';
-        $database = 'fkedu';
-
-        $conn = mysqli_connect($host, $username, $password, $database);
-        if (!$conn) {
-            die('Database connection error: ' . mysqli_connect_error());
+        // Display the complaint calculation results
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $complaintType = $row['Complaint_Type'];
+                $totalComplaints = $row['TotalComplaints'];
+                echo "<tr>";
+                echo "<td>$complaintType</td>";
+                echo "<td>$totalComplaints</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='2'>No complaints found.</td></tr>";
         }
-
-        // Fetch data from the 'complaint' table
-        $query = "SELECT * FROM complaint";
-        $result = mysqli_query($conn, $query);
-
-        // Loop through the query results and populate the table rows
-        while ($row = mysqli_fetch_assoc($result)) {
-            echo "<tr>";
-            echo "<td>" . $row['Complaint_ID'] . "</td>";
-            echo "<td>" . $row['Complaint_Date'] . "</td>";
-            echo "<td>" . $row['Complaint_Time'] . "</td>";
-            echo "<td>" . $row['Complaint_Type'] . "</td>";
-            echo "<td>" . $row['Complaint_Status'] . "</td>";
-            echo "</tr>";
-        }
-
-        // Close the database connection
-        mysqli_close($conn);
         ?>
     </table>
 
-      <footer class="footer">
-         <a href="#">Help</a>
-         <a href="#">Privacy</a>
-         <a href="#">Settings</a>
-         <p>&copy; 2023 Debug Group. All rights reserved.</p>
-      </footer>
-   </div>
-
-
-   <script>
-      const body = document.querySelector("body"),
-      nav = document.querySelector("nav"),
-      modeToggle = document.querySelector(".dark-light"),
-      searchToggle = document.querySelector(".searchToggle"),
-      sidebarOpen = document.querySelector(".sidebarOpen"),
-      sidebarClose = document.querySelector(".sidebarClose");
-      let getMode = localStorage.getItem("mode");
-          if(getMode && getMode === "dark-mode"){
-            body.classList.add("dark");
-          }
-    // js code to toggle dark and light mode
-      modeToggle.addEventListener("click" , () =>{
-        modeToggle.classList.toggle("active");
-        body.classList.toggle("dark");
-        // js code to keep user selected mode even page refresh or file reopen
-        if(!body.classList.contains("dark")){
-            localStorage.setItem("mode" , "light-mode");
-        }else{
-            localStorage.setItem("mode" , "dark-mode");
+    <script>
+        // Function to update the filter selection
+        function updateFilter() {
+            var filter = document.getElementById('filter').value;
+            window.location.href = 'complaint_calc.php?filter=' + filter;
         }
-      });
-     // js code to toggle search box
-        searchToggle.addEventListener("click" , () =>{
-        searchToggle.classList.toggle("active");
-      });
- 
-      
-    //   js code to toggle sidebar
-      sidebarOpen.addEventListener("click" , () =>{
-      nav.classList.add("active");
-       });
-      body.addEventListener("click" , e =>{
-      let clickedElm = e.target;
-      if(!clickedElm.classList.contains("sidebarOpen") && !clickedElm.classList.contains("menu")){
-      nav.classList.remove("active");
-      }
-    });
-   </script>
+    </script>
 </body>
 </html>
+
+<?php
+// Close the database connection
+mysqli_close($conn);
+?>
