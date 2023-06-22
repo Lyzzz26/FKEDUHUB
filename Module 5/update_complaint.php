@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($result) {
         echo "Complaint updated successfully.";
-        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'complaint_dashboard.php';
+        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'complaint_data.php';
         echo "<script>";
         echo "alert('Complaint updated successfully.');";
         echo "window.location.href = '$redirect';";
