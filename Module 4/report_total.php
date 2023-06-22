@@ -24,7 +24,7 @@ if ($conn->connect_error) {
 }
 
     // Example query to retrieve data from the database
-    $query = "SELECT Complaint_ID, COUNT(*) AS total FROM your_table_name GROUP BY issue";
+    $query = "SELECT Report_ID, COUNT(*) AS total FROM report GROUP BY Complaint_Type";
     $result = mysqli_query($conn, $query);
     
     // Loop through the query results and populate the table rows
