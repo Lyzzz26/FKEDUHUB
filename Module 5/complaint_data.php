@@ -456,8 +456,7 @@ td:last-child {
                     <li class="dropdown">
                     <a href="#" class="toggle">Complaint <i class='bx bx-chevron-down'></i></a>
                     <ul class="sub-menu">
-                        <li><a href="complaint_list.php">Complaint List</a></li>
-                        <li><a href="complaint_dashboard.php">Complaint Dashboard</a></li>
+                        <li><a href="complaint_data.php">Complaint Data</a></li>
                         <li><a href="complaint_calc.php">Complaint Calc</a></li>
                         <li><a href="complaint_report.php">Complaint Report</a></li>
                     </ul>

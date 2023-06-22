@@ -468,7 +468,12 @@ select {
                 </div>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
-                    <li><a href="complaint_homepage.php">Complaint</a></li>
+                    <li class="dropdown">
+                    <a href="complaint_homepage.php" class="toggle">Complaint <i class='bx bx-chevron-down'></i></a>
+                    <ul class="sub-menu">
+                        <li><a href="complaint_list.php">Complaint List</a></li>
+                    </ul>
+                </li>
                     <li><a href="#">Report</a></li>
                     <li><a href="#">Log Out</a></li> 
                 </ul>
