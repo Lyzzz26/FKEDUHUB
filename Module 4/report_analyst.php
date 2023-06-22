@@ -1,85 +1,97 @@
 <!-- navbar -->
 <?php include '../Module 4/admin_nav.php'; ?>
 
-<!-- content -->
-<h1>Data Analyst & User Activity</h1>
-
-<!-- Include the Chart.js library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Create a canvas element for the pie chart -->
-<canvas id="pieChart" width="400" height="400"></canvas>
-
-<!-- Create a canvas element for the bar chart -->
-<canvas id="barChart" width="400" height="400"></canvas>
-
 <?php
-// Include the database connection file
-include 'db_conn.php';
+// Step 1: Fetch the metrics data from the database
+function fetchMetricsData() {
+    // Fetch the necessary metrics data from the database
+    // Store the data in $metricsData variable
+    // You can customize this function based on your database structure and query methods
+    // Here, we assume the metrics data is stored in an array with appropriate keys
+    $metricsData = [
+        'posts' => 250,
+        'comments' => 500,
+        'likes' => 1000,
+        'engagement_rate' => 0.75,
+        'retention_rate' => 0.85,
+        'user_satisfaction' => 4.5,
+    ];
 
-// Query the database to retrieve the relevant data
-$sql = "SELECT post, comments, likes, engagement_rate, retention_rate, user_satisfaction FROM your_table_name";
-$result = mysqli_query($conn, $sql);
-
-// Initialize arrays to store data for the charts
-$posts = [];
-$comments = [];
-$likes = [];
-
-// Loop through each row and retrieve data for the charts
-while ($row = mysqli_fetch_assoc($result)) {
-    $posts[] = $row['post'];
-    $comments[] = $row['comments'];
-    $likes[] = $row['likes'];
+    return $metricsData;
 }
 
-// Close the database connection
-mysqli_close($conn);
+// Step 2: Display the metrics data using appropriate visual representations
+function displayMetricsData() {
+    // Fetch the metrics data
+    $metricsData = fetchMetricsData();
+
+    // Display the metrics using HTML and appropriate visual representations
+    echo '<h2>Key Metrics</h2>';
+
+    // Display numerical statistics
+    echo '<div>';
+    echo 'Number of Posts: ' . $metricsData['posts'] . '<br>';
+    echo 'Number of Comments: ' . $metricsData['comments'] . '<br>';
+    echo 'Number of Likes: ' . $metricsData['likes'] . '<br>';
+    echo '</div>';
+
+    // Display line chart for engagement rate
+    echo '<div>';
+    echo '<h3>Engagement Rate</h3>';
+    echo '<canvas id="engagementRateChart"></canvas>';
+    echo '</div>';
+
+    // Display bar graph for retention rate
+    echo '<div>';
+    echo '<h3>Retention Rate</h3>';
+    echo '<canvas id="retentionRateChart"></canvas>';
+    echo '</div>';
+
+    // Display numerical statistics for user satisfaction
+    echo '<div>';
+    echo '<h3>User Satisfaction</h3>';
+    echo 'Average User Satisfaction: ' . $metricsData['user_satisfaction'] . '<br>';
+    echo '</div>';
+
+    // Include the JavaScript code for Chart.js
+    echo '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>';
+
+    // JavaScript code to populate the chart data
+    echo '<script>';
+    echo 'var engagementRateData = {';
+    echo 'labels: ["Week 1", "Week 2", "Week 3", "Week 4"],';
+    echo 'datasets: [{';
+    echo 'label: "Engagement Rate",';
+    echo 'data: [0.6, 0.65, 0.72, 0.8],';
+    echo 'backgroundColor: "rgba(75, 192, 192, 0.2)",';
+    echo 'borderColor: "rgba(75, 192, 192, 1)",';
+    echo 'borderWidth: 1';
+    echo '}]};';
+
+    echo 'var engagementRateCtx = document.getElementById("engagementRateChart").getContext("2d");';
+    echo 'new Chart(engagementRateCtx, {';
+    echo 'type: "line",';
+    echo 'data: engagementRateData';
+    echo '});';
+
+    echo 'var retentionRateData = {';
+    echo 'labels: ["Month 1", "Month 2", "Month 3"],';
+    echo 'datasets: [{';
+    echo 'label: "Retention Rate",';
+    echo 'data: [0.9, 0.87, 0.82],';
+    echo 'backgroundColor: "rgba(255, 99, 132, 0.2)",';
+    echo 'borderColor: "rgba(255, 99, 132, 1)",';
+    echo 'borderWidth: 1';
+    echo '}]};';
+
+    echo 'var retentionRateCtx = document.getElementById("retentionRateChart").getContext("2d");';
+    echo 'new Chart(retentionRateCtx, {';
+    echo 'type: "bar",';
+    echo 'data: retentionRateData';
+    echo '});';
+    echo '</script>';
+}
+
+// Display the metrics data
+displayMetricsData();
 ?>
-
-<script>
-// Retrieve data from PHP variables
-var postsData = <?php echo json_encode($posts); ?>;
-var commentsData = <?php echo json_encode($comments); ?>;
-var likesData = <?php echo json_encode($likes); ?>;
-
-// Create a pie chart
-var pieCtx = document.getElementById('pieChart').getContext('2d');
-var pieChart = new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Posts', 'Comments', 'Likes'],
-        datasets: [{
-            data: [postsData.length, commentsData.length, likesData.length],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-        }]
-    },
-    options: {
-        responsive: true
-    }
-});
-
-// Create a bar chart
-var barCtx = document.getElementById('barChart').getContext('2d');
-var barChart = new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Posts', 'Comments', 'Likes'],
-        datasets: [{
-            label: 'Count',
-            data: [postsData.length, commentsData.length, likesData.length],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-</script>

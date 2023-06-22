@@ -10,12 +10,22 @@
     <th>Issue</th>
     <th>Total</th>
   </tr>
-  <?php
-    // Assuming you have already established a database connection
-    
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "fkedu";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
     // Example query to retrieve data from the database
-    $query = "SELECT issue, COUNT(*) AS total FROM your_table_name GROUP BY issue";
-    $result = mysqli_query($connection, $query);
+    $query = "SELECT Complaint_ID, COUNT(*) AS total FROM your_table_name GROUP BY issue";
+    $result = mysqli_query($conn, $query);
     
     // Loop through the query results and populate the table rows
     while ($row = mysqli_fetch_assoc($result)) {

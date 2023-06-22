@@ -15,3 +15,26 @@
          <a href="#">Settings</a>
          <p>&copy; 2023 Debug Group. All rights reserved.</p>
 </footer>
+
+<style>
+   footer {
+  background-color: var(--nav-color);
+  color: var(--text-color);
+  padding: 10px;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+footer.dark {
+  background-color: var(--nav-color);
+  color: var(--text-color);
+}
+
+footer a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+</style>
